@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybreak – student mental health score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main class="shell">
+
+  <section class="sky-panel" aria-live="polite">
+    <h1 class="brand">Daybreak</h1>
+    <p class="tagline">See how your daily habits tilt your mental health score. An estimate from a model, not a diagnosis.</p>
+
+    <svg class="sky" viewBox="0 0 300 220" role="img" aria-label="Sun position reflects your score">
+      <defs>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="skyTop" offset="0" stop-color="#14163A"/>
+          <stop id="skyBot" offset="1" stop-color="#3B3A78"/>
+        </linearGradient>
+        <radialGradient id="glow"><stop offset="0" stop-color="#FFC59E" stop-opacity=".9"/><stop offset="1" stop-color="#FFC59E" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="300" height="220" fill="url(#skyGrad)"/>
+      <g id="stars" fill="#fff"></g>
+      <g id="sun">
+        <circle r="70" fill="url(#glow)"/>
+        <circle r="24" fill="#FFB48A"/>
+      </g>
+      <path d="M0 175 Q60 150 120 168 T240 160 T300 170 V220 H0Z" fill="#23255C"/>
+      <path d="M0 195 Q80 172 160 190 T300 185 V220 H0Z" fill="#171A45"/>
+    </svg>
+
+    <div class="readout" id="readout">
+      <p class="idle" id="idle-msg">Fill in your day and the sun will rise to match your score.</p>
+      <div id="result" hidden>
+        <p class="score"><span id="score-number">0.0</span><small>/ 10</small></p>
+        <p class="band" id="score-band"></p>
+        <p class="context" id="score-context"></p>
+        <ul class="nudges" id="nudges"></ul>
+      </div>
+      <p class="error" id="error" role="alert" hidden></p>
+    </div>
+  </section>
+
+  <section class="form-panel">
+    <form id="predict-form" novalidate>
+
+      <fieldset>
+        <legend>About you</legend>
+        <div class="row three">
+          <div class="field"><label for="age">Age</label>
+            <input type="number" id="age" name="age" min="10" max="100" placeholder="21" required />
+            <span class="error-msg"></span></div>
+          <div class="field"><label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+              <option value="" disabled selected hidden>Select</option>
+              <option>Male</option><option>Female</option></select>
+            <span class="error-msg"></span></div>
+          <div class="field"><label for="country">Country</label>
+            <input type="text" id="country" name="country" list="country-list" placeholder="India" autocomplete="off" required />
+            <datalist id="country-list"><option value="India"><option value="USA"><option value="Canada"><option value="Australia"><option value="UK"><option value="Germany"><option value="Mexico"><option value="Turkey"><option value="France"></datalist>
+            <span class="error-msg"></span></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Study and screen life</legend>
+        <div class="row two">
+          <div class="field"><label for="academic_level">Academic level</label>
+            <select id="academic_level" name="academic_level" required>
+              <option value="" disabled selected hidden>Select</option>
+              <option>High School</option><option>Undergraduate</option><option>Graduate</option></select>
+            <span class="error-msg"></span></div>
+          <div class="field"><label for="purpose_of_use">Main reason you use it</label>
+            <select id="purpose_of_use" name="purpose_of_use" required>
+              <option value="" disabled selected hidden>Select</option>
+              <option>Networking</option><option>Education</option><option>Entertainment</option><option>News</option></select>
+            <span class="error-msg"></span></div>
+          <div class="field"><label for="most_used_platform">Most-used platform</label>
+            <select id="most_used_platform" name="most_used_platform" required>
+              <option value="" disabled selected hidden>Select</option>
+              <option>Facebook</option><option>Instagram</option><option>Snapchat</option><option>Twitter</option><option>YouTube</option><option>TikTok</option><option>LinkedIn</option><option>LINE</option><option>KakaoTalk</option><option>VKontakte</option><option>WhatsApp</option><option>WeChat</option></select>
+            <span class="error-msg"></span></div>
+          <div class="field"><label for="daily_unlocks">Phone unlocks per day</label>
+            <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" placeholder="60" required />
+            <span class="error-msg"></span></div>
+        </div>
+        <div class="slider"><label for="avg_daily_usage_hours">Screen time <output data-for="avg_daily_usage_hours"></output></label>
+          <input type="range" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="16" step="0.1" value="4" /></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Body and mind</legend>
+        <div class="slider"><label for="sleep_hours_per_night">Sleep per night <output data-for="sleep_hours_per_night"></output></label>
+          <input type="range" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="12" step="0.1" value="7" /></div>
+        <div class="slider"><label for="study_hours">Study per day <output data-for="study_hours"></output></label>
+          <input type="range" id="study_hours" name="study_hours" min="0" max="16" step="0.1" value="3" /></div>
+        <div class="slider"><label for="physical_activity_hours">Physical activity per day <output data-for="physical_activity_hours"></output></label>
+          <input type="range" id="physical_activity_hours" name="physical_activity_hours" min="0" max="6" step="0.1" value="1" /></div>
+
+        <div class="field">
+          <label id="stress-label">Stress level right now</label>
+          <div class="segmented" id="stress_level_group" role="radiogroup" aria-labelledby="stress-label">
+            <button type="button" class="seg" data-value="Low">Low</button>
+            <button type="button" class="seg" data-value="Medium">Medium</button>
+            <button type="button" class="seg" data-value="High">High</button>
+            <button type="button" class="seg" data-value="Very High">Very high</button>
+          </div>
+          <input type="hidden" id="stress_level" name="stress_level" />
+          <span class="error-msg"></span>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="submit" id="submit-btn"><span>Get my score</span><i class="spin" aria-hidden="true"></i></button>
+      <p class="fine">Informational only, not a clinical assessment. If you're struggling, talk to someone you trust.</p>
+    </form>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
